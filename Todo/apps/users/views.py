@@ -7,11 +7,18 @@ from typing import List
 from fastapi.security import OAuth2PasswordRequestForm
 
 from Todo.apps.users.documents import Post, User
-from Todo.apps.users.services.auth import authenticate_user, create_access_token
+from Todo.apps.users.services.auth import authenticate_user, create_access_token, get_password_hash
 from Todo.config import settings
 from Todo.apps.users.models import Token
 
 router = APIRouter(prefix="")
+
+
+@router.post("/signup")
+async def signup(user_data: User):
+    user_data.password = get_password_hash(user_data.password)
+    await user_data.save()
+
 
 
 @router.post("/token", response_model=Token)
@@ -23,7 +30,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(minutes=int(settings.ACCESS_TOKEN_EXPIRE_MINUTES)ei)
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )

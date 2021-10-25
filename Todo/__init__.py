@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from beanie import init_beanie
 
 from .config import settings
-from .apps.users.documents import Post
+from .apps.users.documents import Post, User
 from Todo.apps import router
 
 
@@ -25,6 +25,6 @@ def create_app() -> FastAPI:
     @app.on_event("startup")
     async def startup_event():
         client = motor.motor_asyncio.AsyncIOMotorClient(settings.MONGODB_URL)
-        await init_beanie(database=client[settings.MONGODB_DATABASE_NAME], document_models=[Post])
+        await init_beanie(database=client[settings.MONGODB_DATABASE_NAME], document_models=[Post, User])
 
     return app
