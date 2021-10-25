@@ -20,3 +20,8 @@ class TokenData(BaseModel):
 
 class UserInDB(Post):
     hashed_password: str
+
+
+class Comment(BaseModel):
+    item: str
+    created_bt: str

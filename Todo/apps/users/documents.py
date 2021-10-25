@@ -10,5 +10,11 @@ class User(Document):
 
 class Post(Document):
     item: str
-    comment: Optional[str]
+    desc: Optional[str]
+
+
+class Comment(Document):
+    item: str
+    created_by: str
+
 
