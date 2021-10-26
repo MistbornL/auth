@@ -53,6 +53,13 @@ async def register_user():
     return await Post.find_all().to_list()
 
 
+@router.get("/")
+async def get_last_ten_post(skip: int = 0, limit: int = 3):
+    post = [Post.find_all()]
+    return post
+
+
+
 @router.post("/api/update/post/{item_id}", status_code=200, response_model=Post)
 async def register_user(item_id: str, item: Post):
     if todo := await Post.find_one(Post.id == PydanticObjectId(item_id)):
