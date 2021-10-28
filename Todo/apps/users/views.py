@@ -59,7 +59,6 @@ async def get_last_ten_post(skip: int = 0, limit: int = 3):
     return post
 
 
-
 @router.post("/api/update/post/{item_id}", status_code=200, response_model=Post)
 async def register_user(item_id: str, item: Post):
     if todo := await Post.find_one(Post.id == PydanticObjectId(item_id)):
@@ -73,7 +72,7 @@ async def register_user(item_id: str, item: Post):
 @router.post("/api/delete/post/{item_id}", response_model=Post)
 async def delete_item(item_id: str):
     if todo := await Post.find_one(Post.id == PydanticObjectId(item_id)):
-        Post.delete(todo)
+        await Post.delete(todo)
         return {"detail": "item deleted"}
     raise HTTPException(status_code=400, detail="not found")
 
@@ -102,7 +101,7 @@ async def delete_item(comment_id: str):
 
 
 @router.get("/api/get/comment/{comment_id}", response_model=Comment)
-async def get_comment(comment_id: str ):
+async def get_comment(comment_id: str):
     if com := await Post.find_one(Post.id == PydanticObjectId(comment_id)):
         return com
     raise HTTPException(status_code=400, detail="not found")
@@ -111,4 +110,3 @@ async def get_comment(comment_id: str ):
 @router.get("/api/get/all/comment/", response_model=List[Comment])
 async def get_comment():
     return await Comment.find_all().to_list()
-
