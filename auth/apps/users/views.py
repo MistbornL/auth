@@ -56,7 +56,7 @@ async def find_all_post():
 
 @router.get("/")
 async def get_last_ten_post(skip: int = 0, limit: int = 3):
-    post = Post.find_all().limit(limit).to_list()
+    post = await Post.find_all().limit(limit).to_list()
     return post
 
 
@@ -98,7 +98,6 @@ async def register_user(comment_id: str, item: Comment):
 @router.post("/api/delete/comment/{comment_id}", response_model=Comment)
 async def delete_item(comment_id: str):
     if com := await Comment.find_one(Post.id == PydanticObjectId(comment_id)):
-        print(com)
         return await Comment.delete(com)
     raise HTTPException(status_code=400, detail="not found")
 
