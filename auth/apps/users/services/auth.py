@@ -5,9 +5,9 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from Todo.apps.users.documents import User
-from Todo.config import settings
-from Todo.apps.users.models import TokenData
+from auth.apps.users.documents import User
+from auth.config import settings
+from auth.apps.users.models import TokenData
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

@@ -9,6 +9,7 @@ class User(Document):
 
 
 class Post(Document):
+    created_by: str
     item: str
     desc: Optional[str]
 

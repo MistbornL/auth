@@ -1,4 +1,4 @@
-from Todo import create_app
+from auth import create_app
 
 app = create_app()
 

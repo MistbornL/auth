@@ -6,10 +6,10 @@ from typing import List
 
 from fastapi.security import OAuth2PasswordRequestForm
 
-from Todo.apps.users.documents import Post, User, Comment
-from Todo.apps.users.services.auth import authenticate_user, create_access_token, get_password_hash
-from Todo.config import settings
-from Todo.apps.users.models import Token
+from auth.apps.users.documents import Post, User, Comment
+from auth.apps.users.services.auth import authenticate_user, create_access_token, get_password_hash, get_current_user
+from auth.config import settings
+from auth.apps.users.models import Token
 
 router = APIRouter(prefix="")
 
@@ -37,49 +37,52 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
 
 
 @router.post("/api/create/post", status_code=201, response_model=Post)
-async def register_user(item: Post):
+async def register_user(item: Post, current_user: User = Depends(get_current_user)):
+    item.created_by = str(current_user.email)
     return await item.save()
 
 
 @router.get("/api/get/post/{item_id}", response_model=Post)
-async def register_user(item_id: str):
-    if todo := await Post.find_one(Post.id == PydanticObjectId(item_id)):
-        return todo
+async def get_post(item_id: str):
+    if post := await Post.find_one(Post.id == PydanticObjectId(item_id)):
+        return post
     raise HTTPException(status_code=400, detail="not found")
 
 
 @router.get("/api/get/all/item", response_model=List[Post])
-async def register_user():
+async def find_all_post():
     return await Post.find_all().to_list()
 
 
 @router.get("/")
 async def get_last_ten_post(skip: int = 0, limit: int = 3):
-    post = [Post.find_all()]
+    post = Post.find_all().limit(limit).to_list()
     return post
 
 
 @router.post("/api/update/post/{item_id}", status_code=200, response_model=Post)
-async def register_user(item_id: str, item: Post):
-    if todo := await Post.find_one(Post.id == PydanticObjectId(item_id)):
-        todo.item = item.item
-        if item.comment:
-            todo.desc = item.comment
-        return await todo.save()
+async def register_user(item_id: str, new_descr: str, current_user: User = Depends(get_current_user)):
+    if post := await Post.find_one(Post.id == PydanticObjectId(item_id)):
+        print("asd")
+        if str(current_user.email) == post.created_by:
+            post.desc = new_descr
+            print('adsdsa')
+            return await post.save()
     raise HTTPException(status_code=400, detail="not found")
 
 
 @router.post("/api/delete/post/{item_id}", response_model=Post)
-async def delete_item(item_id: str):
-    if todo := await Post.find_one(Post.id == PydanticObjectId(item_id)):
-        await Post.delete(todo)
-        return {"detail": "item deleted"}
+async def delete_item(item_id: str, current_user: User = Depends(get_current_user)):
+    if post := await Post.find_one(Post.id == PydanticObjectId(item_id)):
+        if str(current_user.email) == post.created_by:
+            await Post.delete(post)
+            return {"detail": "item deleted"}
     raise HTTPException(status_code=400, detail="not found")
 
 
 @router.post("/api/create/comment/{item_id}", status_code=201, response_model=Comment)
 async def create_comment(item_id: str, item: Comment):
-    if todo := await Post.find_one(Post.id == PydanticObjectId(item_id)):
+    if post := await Post.find_one(Post.id == PydanticObjectId(item_id)):
         return await item.save()
 
 

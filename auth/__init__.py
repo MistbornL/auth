@@ -7,7 +7,7 @@ from beanie import init_beanie
 
 from .config import settings
 from .apps.users.documents import Post, User, Comment
-from Todo.apps import router
+from auth.apps import router
 
 
 def create_app() -> FastAPI:

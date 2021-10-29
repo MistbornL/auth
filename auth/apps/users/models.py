@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic import BaseModel
-from Todo.apps.users.documents import Post
+from auth.apps.users.documents import Post
 
 
 class TodoItem(BaseModel):
