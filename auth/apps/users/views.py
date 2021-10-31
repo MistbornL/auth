@@ -54,13 +54,13 @@ async def find_all_post():
     return await Post.find_all().to_list()
 
 
-@router.get("/", response_model=List[Post])
+@router.get("/get/last/posts", response_model=List[Post])
 async def get_last_ten_post(limit: int = 3):
     post = await Post.find_all().limit(limit).to_list()
     return post
 
 
-@router.post("/api/update/post/{item_id}", status_code=200, response_model=Post)
+@router.put("/api/update/post/{item_id}", status_code=200, response_model=Post)
 async def register_user(item_id: str, new_item: str, current_user: User = Depends(get_current_user)):
     if post := await Post.get(item_id):
         if post.created_by == str(current_user.email):
@@ -69,13 +69,17 @@ async def register_user(item_id: str, new_item: str, current_user: User = Depend
     raise HTTPException(status_code=400, detail="not found")
 
 
-@router.post("/api/delete/post/{item_id}", response_model=Post)
+@router.delete("/api/delete/post/{item_id}", response_model=Post)
 async def delete_item(item_id: str, current_user: User = Depends(get_current_user)):
     if post := await Post.get(item_id):
         if str(current_user.email) == post.created_by:
             return await Post.delete(post)
     raise HTTPException(status_code=400, detail="not found")
 
+
+@router.delete("/api/delete/all/post")
+async def delete_all():
+    return await Post.delete_all()
 
 @router.post("/api/create/comment/{item_id}", status_code=201, response_model=Comment)
 async def create_comment(item_id: str, item: Comment, current_user: User = Depends(get_current_user)):
@@ -84,7 +88,7 @@ async def create_comment(item_id: str, item: Comment, current_user: User = Depen
         return await item.save()
 
 
-@router.post("/api/update/comment/{comment_id}", status_code=200, response_model=Comment)
+@router.put("/api/update/comment/{comment_id}", status_code=200, response_model=Comment)
 async def update_comment(comment_id: str, item: Comment, new_comment: str, current_user: User = Depends(get_current_user)):
     if com := await Comment.get(comment_id):
         item.com = new_comment
@@ -93,7 +97,7 @@ async def update_comment(comment_id: str, item: Comment, new_comment: str, curre
     raise HTTPException(status_code=400, detail="not found")
 
 
-@router.post("/api/delete/comment/{comment_id}", response_model=Comment)
+@router.delete("/api/delete/comment/{comment_id}", response_model=Comment)
 async def delete_item(comment_id: str):
     if com := await Comment.get(comment_id):
         return await Comment.delete(com)
