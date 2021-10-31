@@ -3,8 +3,6 @@ from beanie import Document
 from datetime import datetime
 
 
-
-
 class User(Document):
     email: str
     password: str

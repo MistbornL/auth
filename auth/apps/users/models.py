@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from auth.apps.users.documents import Post
 
 
-class Post(BaseModel):
+class PostModel(BaseModel):
     created_by: Optional[str]
     item: str
     desc: Optional[str]
@@ -23,6 +23,6 @@ class UserInDB(Post):
     hashed_password: str
 
 
-class Comment(BaseModel):
-    item: str
+class CommentModel(BaseModel):
+    com: str
     current_user: Optional[str]
