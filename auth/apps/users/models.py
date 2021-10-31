@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from auth.apps.users.documents import Post
 
 
-class TodoItem(BaseModel):
+class Post(BaseModel):
+    created_by: Optional[str]
     item: str
     desc: Optional[str]
 
@@ -24,4 +25,4 @@ class UserInDB(Post):
 
 class Comment(BaseModel):
     item: str
-    created_bt: str
+    current_user: Optional[str]
