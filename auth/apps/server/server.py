@@ -10,10 +10,15 @@ secondapp = socketio.ASGIApp(sio, static_files=static_files)
 
 
 @sio.event
-def connect(sid, environ, auth):
-    print('connect ', sid)
+async def connect(sid, environ, auth):
+    await sio.emit("my message", {"first": "message"})
 
 
 @sio.event
-def disconnect(sid):
-    print('disconnect ', sid)
+async def disconnect(sid):
+    print("I'm disconnected!")
+
+
+@sio.event
+async def send_message(sid, data):
+    print("movida")

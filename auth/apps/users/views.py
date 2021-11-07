@@ -121,3 +121,4 @@ async def get_comment():
 @router.delete("/api/delete/all/comment")
 async def delete_all():
     return await Comment.delete_all()
+

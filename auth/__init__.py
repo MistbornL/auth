@@ -18,7 +18,6 @@ def create_app() -> FastAPI:
     @secondapp.get("/sub")
     async def read_sub():
         message = {"message": "Hello World from sub API"}
-        await sio.emit('my event', message)
         return message
 
     app.mount("/sa", secondapp)
