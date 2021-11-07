@@ -8,10 +8,20 @@ from beanie import init_beanie
 from .config import settings
 from .apps.users.documents import Post, User, Comment
 from auth.apps import router
+from auth.apps.server.server import sio, secondapp
 
 
 def create_app() -> FastAPI:
     app = FastAPI()
+    secondapp = FastAPI()
+
+    @secondapp.get("/sub")
+    async def read_sub():
+        message = {"message": "Hello World from sub API"}
+        await sio.emit('my event', message)
+        return message
+
+    app.mount("/sa", secondapp)
 
     app.include_router(router)
     app.add_middleware(

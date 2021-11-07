@@ -81,7 +81,7 @@ async def delete_item(item_id: str, current_user: User = Depends(get_current_use
 async def delete_all():
     return await Post.delete_all()
 
-@router.post("/api/create/comment/{item_id}", status_code=201, response_model=CommentModel)
+@router.post("/api/create/comment/{item_id}", status_code=201, response_model=Comment)
 async def create_comment(item_id: str, item: Comment, current_user: User = Depends(get_current_user)):
     if post := await Post.get(item_id):
         item.current_user = str(current_user.email)
